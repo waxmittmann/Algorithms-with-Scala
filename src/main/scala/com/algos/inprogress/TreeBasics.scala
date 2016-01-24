@@ -19,8 +19,9 @@ object TreeBasics {
     //3, 6, 4, 1, 5
 
     println(treeToString(tree))
+    println(treeToString2(tree))
 
-    println(height(tree) + ", " + heightViaTraverseViaTraverse2(tree))
+    println(height(tree) + ", " + height(tree))
 
     println(preorder(tree))
     println(inorder(tree))
@@ -40,6 +41,64 @@ object TreeBasics {
     go(cur, "") + "\n"
   }
 
+//  def traverseWithState[A, B]()
+
+  def treeToString2[A](cur: Node[A]): String = {
+    val initialState = (cur, "")
+    val addPrefixToValue: (A, String) => String = (a: A, prefix: String) => prefix + a
+    val mergeValueAndSubtree: (String, String) => String = (cur: String, subTree: String) => s"$cur\n$subTree\n"
+    val postfix = (prefix: String) => (str: String) => (prefix + str)
+    val combineValueWithSubtrees = (cur: String, lhs: Option[String], rhs: Option[String]) => {
+      s"$cur\n${lhs.getOrElse("s")}${rhs.getOrElse("")}"
+    }
+
+    traverseWithState2[A, String, String](
+      initialState,
+      addPrefixToValue,
+      mergeValueAndSubtree,
+      postfix("<"),  postfix(">"),
+      combineValueWithSubtrees
+    )
+  }
+
+  def traverseWithState2[A, B, S](cur: (Node[A], S), fV: (A, S) => B, fMerge: (B, B) => B,
+                                 fLhsState: S => S, fRhsState: S => S,
+                                 f: (B, Option[B], Option[B]) => (B)): (B) = {
+    val nodeToVal: (Node[A], S) => B = (node: Node[A], state: S) => fV(node.value, state)
+
+    traverseWithState(cur, fV, nodeToVal, fLhsState, fMerge, nodeToVal, fRhsState, fMerge, f)
+  }
+
+
+  def traverseWithState[A, B, S](cur: (Node[A], S), fV: (A, S) => B,
+                                 fLhs: (Node[A], S) => (B), fLhsState: S => S, fLhsMerge: (B, B) => B,
+                                 fRhs: (Node[A], S) => (B), fRhsState: S => S, fRhsMerge: (B, B) => B,
+                                 f: (B, Option[B], Option[B]) => (B)): (B) = {
+    def t(cur: (Node[A], S)): B = {
+      traverseWithState(cur, fV, fLhs, fLhsState, fLhsMerge, fRhs, fRhsState, fRhsMerge, f)
+    }
+
+    val (curNode, curState) = cur
+
+    val lhsResult = curNode.lhs.flatMap(lhsNode => {
+      val newLhsState = fLhsState(curState)
+      val lhsB = fLhs(lhsNode, curState)
+      val lhsChildB =  t((lhsNode, newLhsState))
+      Some(fLhsMerge(lhsB, lhsChildB))
+    })
+
+    val rhsResult = curNode.rhs.flatMap(rhsNode => {
+      val newRhsState = fRhsState(curState)
+      val rhsB = fRhs(rhsNode, curState)
+      val rhsChildB =  t((rhsNode, newRhsState))
+      Some(fRhsMerge(rhsB, rhsChildB))
+    })
+
+    val vString = fV(curNode.value, curState)
+
+    f(vString, lhsResult, rhsResult)
+  }
+
   def traverse[A, B](cur: Node[A], fab: A => B, f: (B, Option[B], Option[B]) => B): B = {
     cur match {
       case Node(value, Some(lhs), Some(rhs)) => f(fab(value), Some(traverse(lhs, fab, f)), Some(traverse(rhs, fab, f)))
@@ -56,24 +115,10 @@ object TreeBasics {
       )((lhs: B) =>
         rhsO.fold(fParentChild(v, lhs))((rhs: B) => fParentChild(v, rhs))
       )
-
-//      val fa = f(cur.value)
-//      if (lhsO.isDefined && rhsO.isDefined) {
-//        fParentChild(fa, fBranch(lhsO.get, rhsO.get))
-//      } else if (lhsO.isDefined) {
-//        fParentChild(fa, lhsO.get)
-//      } else if (rhsO.isDefined) {
-//        fParentChild(fa, rhsO.get)
-//      } else {
-//        fa
-//      }
     })
   }
 
   def height[A](cur: Node[A]): Int =
-    traverse2[A, Int](cur, _ => 1, _ + _, (a, b) => Math.max(a, b))
-
-  def heightViaTraverseViaTraverse2[A](cur: Node[A]): Int =
     traverse2[A, Int](cur, _ => 1, _ + _, (a, b) => Math.max(a, b))
 
   def inorder[A](cur: Node[A]): List[A] = {
