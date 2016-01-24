@@ -41,60 +41,41 @@ object TreeBasics {
     go(cur, "") + "\n"
   }
 
-//  def traverseWithState[A, B]()
-
   def treeToString2[A](cur: Node[A]): String = {
     val initialState = (cur, "")
     val addPrefixToValue: (A, String) => String = (a: A, prefix: String) => prefix + a
-    val mergeValueAndSubtree: (String, String) => String = (cur: String, subTree: String) => s"$cur\n$subTree\n"
-    val postfix = (prefix: String) => (str: String) => (prefix + str)
+    val postfix = (postfix: String) => (str: String) => (str + postfix)
     val combineValueWithSubtrees = (cur: String, lhs: Option[String], rhs: Option[String]) => {
-      s"$cur\n${lhs.getOrElse("s")}${rhs.getOrElse("")}"
+      s"$cur\n${lhs.getOrElse("")}${rhs.getOrElse("")}"
     }
 
-    traverseWithState2[A, String, String](
+    traverseWithState[A, String, String](
       initialState,
       addPrefixToValue,
-      mergeValueAndSubtree,
       postfix("<"),  postfix(">"),
       combineValueWithSubtrees
     )
   }
 
-  def traverseWithState2[A, B, S](cur: (Node[A], S), fV: (A, S) => B, fMerge: (B, B) => B,
-                                 fLhsState: S => S, fRhsState: S => S,
+  def traverseWithState[A, B, S](cur: (Node[A], S), fV: (A, S) => B, fLhsState: S => S, fRhsState: S => S,
                                  f: (B, Option[B], Option[B]) => (B)): (B) = {
-    val nodeToVal: (Node[A], S) => B = (node: Node[A], state: S) => fV(node.value, state)
-
-    traverseWithState(cur, fV, nodeToVal, fLhsState, fMerge, nodeToVal, fRhsState, fMerge, f)
-  }
-
-
-  def traverseWithState[A, B, S](cur: (Node[A], S), fV: (A, S) => B,
-                                 fLhs: (Node[A], S) => (B), fLhsState: S => S, fLhsMerge: (B, B) => B,
-                                 fRhs: (Node[A], S) => (B), fRhsState: S => S, fRhsMerge: (B, B) => B,
-                                 f: (B, Option[B], Option[B]) => (B)): (B) = {
-    def t(cur: (Node[A], S)): B = {
-      traverseWithState(cur, fV, fLhs, fLhsState, fLhsMerge, fRhs, fRhsState, fRhsMerge, f)
+    def traverse(cur: (Node[A], S)): B = {
+      traverseWithState(cur, fV, fLhsState, fRhsState, f)
     }
 
     val (curNode, curState) = cur
-
-    val lhsResult = curNode.lhs.flatMap(lhsNode => {
-      val newLhsState = fLhsState(curState)
-      val lhsB = fLhs(lhsNode, curState)
-      val lhsChildB =  t((lhsNode, newLhsState))
-      Some(fLhsMerge(lhsB, lhsChildB))
-    })
-
-    val rhsResult = curNode.rhs.flatMap(rhsNode => {
-      val newRhsState = fRhsState(curState)
-      val rhsB = fRhs(rhsNode, curState)
-      val rhsChildB =  t((rhsNode, newRhsState))
-      Some(fRhsMerge(rhsB, rhsChildB))
-    })
+    def processNode(stateTransform: S => S): (Node[A]) => Option[B] = {
+      (curNode => {
+        val newState = stateTransform(curState)
+        val result =  traverse((curNode, newState))
+        Some(result)
+      })
+    }
 
     val vString = fV(curNode.value, curState)
+
+    val lhsResult = curNode.lhs.flatMap(processNode(fLhsState)(_))
+    val rhsResult = curNode.rhs.flatMap(processNode(fRhsState)(_))
 
     f(vString, lhsResult, rhsResult)
   }
