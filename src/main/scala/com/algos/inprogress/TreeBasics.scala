@@ -19,7 +19,6 @@ object TreeBasics {
     //3, 6, 4, 1, 5
 
     println(treeToString(tree))
-    println(treeToString2(tree))
 
     println(height(tree) + ", " + height(tree))
 
@@ -28,35 +27,9 @@ object TreeBasics {
     println(postorder(tree))
   }
 
-  def treeToString[A](cur: Node[A]): String = {
-    def go[A] (cur: Node[A], indent: String): String = {
-      val str = cur match {
-        case Node(value, Some(lhs), Some(rhs)) => value + "\n" + go(lhs, indent + "<") + "\n" + go(rhs, indent + ">")
-        case Node(value, Some(lhs), None) => value + "\n" + go(lhs, indent + "<")
-        case Node(value, None, Some(rhs)) => value + "\n" + go(rhs, indent + ">")
-        case Node(value, None, None) => value
-      }
-      indent + str
-    }
-    go(cur, "") + "\n"
-  }
-
-  def treeToString2[A](cur: Node[A]): String = {
-    val initialState = (cur, "")
-    val addPrefixToValue: (A, String) => String = (a: A, prefix: String) => prefix + a
-    val postfix = (postfix: String) => (str: String) => (str + postfix)
-    val combineValueWithSubtrees = (cur: String, lhs: Option[String], rhs: Option[String]) => {
-      s"$cur\n${lhs.getOrElse("")}${rhs.getOrElse("")}"
-    }
-
-    traverseWithState[A, String, String](
-      initialState,
-      addPrefixToValue,
-      postfix("<"),  postfix(">"),
-      combineValueWithSubtrees
-    )
-  }
-
+  /** *
+    *  The base stuff
+    */
   def traverseWithState[A, B, S](cur: (Node[A], S), fV: (A, S) => B, fLhsState: S => S, fRhsState: S => S,
                                  f: (B, Option[B], Option[B]) => (B)): (B) = {
     def traverse(cur: (Node[A], S)): B = {
@@ -80,13 +53,26 @@ object TreeBasics {
     f(vString, lhsResult, rhsResult)
   }
 
-  def traverse[A, B](cur: Node[A], fab: A => B, f: (B, Option[B], Option[B]) => B): B = {
+  def traverseNode2[A, B](cur: Node[A], fab: Node[A] => Option[B], f: (Option[B], Option[B], Option[B]) => Option[B]): Option[B] = {
     cur match {
-      case Node(value, Some(lhs), Some(rhs)) => f(fab(value), Some(traverse(lhs, fab, f)), Some(traverse(rhs, fab, f)))
-      case Node(value, Some(lhs), None) => f(fab(value), Some(traverse(lhs, fab, f)), None)
-      case Node(value, None, Some(rhs)) => f(fab(value), None, Some(traverse(rhs, fab, f)))
-      case Node(value, None, None) => fab(value)
+      case n @ Node(value, Some(lhs), Some(rhs)) => f(fab(n), traverseNode2(lhs, fab, f), traverseNode2(rhs, fab, f))
+      case n @ Node(value, Some(lhs), None) => f(fab(n), traverseNode2(lhs, fab, f), None)
+      case n @ Node(value, None, Some(rhs)) => f(fab(n), None, traverseNode2(rhs, fab, f))
+      case n @ Node(value, None, None) => fab(n)
     }
+  }
+
+  def traverseNode[A, B](cur: Node[A], fab: Node[A] => B, f: (B, Option[B], Option[B]) => B): B = {
+    cur match {
+      case n @ Node(value, Some(lhs), Some(rhs)) => f(fab(n), Some(traverseNode(lhs, fab, f)), Some(traverseNode(rhs, fab, f)))
+      case n @ Node(value, Some(lhs), None) => f(fab(n), Some(traverseNode(lhs, fab, f)), None)
+      case n @ Node(value, None, Some(rhs)) => f(fab(n), None, Some(traverseNode(rhs, fab, f)))
+      case n @ Node(value, None, None) => fab(n)
+    }
+  }
+
+  def traverse[A, B](cur: Node[A], fab: A => B, f: (B, Option[B], Option[B]) => B): B = {
+    traverseNode(cur, n => fab(n.value), f)
   }
 
   def traverse2[A, B](cur: Node[A], f: A => B, fParentChild: (B, B) => B, fBranch: (B, B) => B): B = {
@@ -96,6 +82,48 @@ object TreeBasics {
       )((lhs: B) =>
         rhsO.fold(fParentChild(v, lhs))((rhs: B) => fParentChild(v, rhs))
       )
+    })
+  }
+
+  /** *
+    * Applications
+    */
+//  def traverseWithState[A, B, S](cur: (Node[A], S), fV: (A, S) => B, fLhsState: S => S, fRhsState: S => S,
+//                                 f: (B, Option[B], Option[B]) => (B)): (B) = {
+
+  /*def lowestCommonAncestor[A](root: Node[A], valueA: A, valueB: A): Node[A] = {
+    val initial: (Node[A], Option[Node[A]]) = (root, None)
+
+    val fv = (cur: Node[A], s: Option[Node[A]]) => {
+      s.fold({
+        if (cur.value == valueA || cur.value == valueB)
+          Some(cur)
+        else
+          None
+      })(foundPreviously => {
+        //Already found it
+        if (foundPreviously.value != valueA && foundPreviously.value != valueB) {
+          Some(foundPreviously)
+        } else if ((foundPreviously.value == valueA && cur.value == valueB) || (foundPreviously.value == valueB && cur.value == valueA)) {
+          Some(cur)
+        } else {
+          Some(foundPreviously)
+        }
+      })
+    }
+
+    traverseWithState[A, Node[A], Node[A]](initial, fv, identity, identity, )
+  }*/
+
+  def lowestCommonAncestor[A](root: Node[A], valueA: A, valueB: A): Node[A] = {
+    //  def traverse[A, B](cur: Node[A], fab: A => B, f: (B, Option[B], Option[B]) => B): B = {
+    traverseNode[A, Option[Node[A]]](root, identity, (curNode, leftNodeO, rightNodeO) => {
+      if (leftNodeO.isDefined) {
+        val leftNode: Option[Node[A]] = leftNodeO.get
+        if (leftNode)
+      }
+
+
     })
   }
 
@@ -129,5 +157,21 @@ object TreeBasics {
       val result: List[A] = lhs ::: rhs ::: p
       result
     })
+  }
+
+  def treeToString[A](cur: Node[A]): String = {
+    val initialState = (cur, "")
+    val addPrefixToValue: (A, String) => String = (a: A, prefix: String) => prefix + a
+    val postfix = (postfix: String) => (str: String) => (str + postfix)
+    val combineValueWithSubtrees = (cur: String, lhs: Option[String], rhs: Option[String]) => {
+      s"$cur\n${lhs.getOrElse("")}${rhs.getOrElse("")}"
+    }
+
+    traverseWithState[A, String, String](
+      initialState,
+      addPrefixToValue,
+      postfix("<"),  postfix(">"),
+      combineValueWithSubtrees
+    )
   }
 }
