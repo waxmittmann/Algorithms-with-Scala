@@ -63,16 +63,13 @@ object TreeBasics {
   }
 
   def traverseNode[A, B](cur: Node[A], fab: Node[A] => B, f: (B, Option[B], Option[B]) => B): B = {
-    cur match {
-      case n @ Node(value, Some(lhs), Some(rhs)) => f(fab(n), Some(traverseNode(lhs, fab, f)), Some(traverseNode(rhs, fab, f)))
-      case n @ Node(value, Some(lhs), None) => f(fab(n), Some(traverseNode(lhs, fab, f)), None)
-      case n @ Node(value, None, Some(rhs)) => f(fab(n), None, Some(traverseNode(rhs, fab, f)))
-      case n @ Node(value, None, None) => fab(n)
-    }
+    traverseNode2(cur, (n: Node[A]) => Some(fab(n)), (v: Option[B], lhs: Option[B], rhs: Option[B]) => {
+      Some(f(v.get, lhs, rhs))
+    }).get
   }
 
   def traverse[A, B](cur: Node[A], fab: A => B, f: (B, Option[B], Option[B]) => B): B = {
-    traverseNode(cur, n => fab(n.value), f)
+    traverseNode[A, B](cur, n => fab(n.value), f)
   }
 
   def traverse2[A, B](cur: Node[A], f: A => B, fParentChild: (B, B) => B, fBranch: (B, B) => B): B = {
@@ -115,17 +112,66 @@ object TreeBasics {
     traverseWithState[A, Node[A], Node[A]](initial, fv, identity, identity, )
   }*/
 
+  case class Result[A](rType: String, node: Node[A])
+
+
+  /*
+  def lowestCommonAncestor[A](root: Node[A], valueA: A, valueB: A): Node[A] = {
+    traverseNode2[A, Result[A]](root,
+      (n: Node[A]) => {
+        if (n.value == valueA) Some(Result[A]("a", n))
+        else if(n.value == valueB) Some(Result[A]("b", n))
+        else None
+      },
+      (c, lhs, rhs) => {
+        if (c.r)
+      })
+
+  }*/
+
+
+/*
   def lowestCommonAncestor[A](root: Node[A], valueA: A, valueB: A): Node[A] = {
     //  def traverse[A, B](cur: Node[A], fab: A => B, f: (B, Option[B], Option[B]) => B): B = {
-    traverseNode[A, Option[Node[A]]](root, identity, (curNode, leftNodeO, rightNodeO) => {
-      if (leftNodeO.isDefined) {
-        val leftNode: Option[Node[A]] = leftNodeO.get
-        if (leftNode)
-      }
+    traverseNode2[A, Node[A]](root, (n: Node[A]) => if (n.value == valueA || n.value == valueB) Some(n) else None,
 
+      (n: Node[A]) => if (n.value == valueA || n.value == valueB) Some(n) else None,
+      (curNodeO, leftNodeO, rightNodeO) => {
+        leftNodeO.fold({
+          rightNodeO.fold({
+            curNodeO
+          })(rightNode => {
+            if (rightNode.value != valueA && rightNode.value != valueB) {
+              Some(rightNode)
+            }
 
-    })
-  }
+            curNodeO.fold({
+              Some(rightNode)
+            })(curNode => {
+              if ((rightNode.value == valueA && curNode.value == valueB) || (rightNode.value == valueB && curNode.value == valueA)) {
+                Some(curNode)
+              } else {
+                Some(rightNode)
+              }
+            })
+          })
+        })(leftNode => {
+          if (leftNode.value != valueA && leftNode.value != valueB) {
+            Some(leftNode)
+          }
+
+          curNodeO.fold({
+            Some(leftNode)
+          })(curNode => {
+            if ((leftNode.value == valueA && curNode.value == valueB) || (leftNode.value == valueB && curNode.value == valueA)) {
+              Some(curNode)
+            } else {
+              Some(leftNode)
+            }
+          })
+        })
+      })
+  }*/
 
   def height[A](cur: Node[A]): Int =
     traverse2[A, Int](cur, _ => 1, _ + _, (a, b) => Math.max(a, b))
