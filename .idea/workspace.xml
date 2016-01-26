@@ -75,11 +75,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MaxDifference.scala" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MaxDifference.scala" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/com/algos/inprogress/MaxDifference.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="8" column="39" selection-start-line="8" selection-start-column="39" selection-end-line="8" selection-end-column="39" />
+            <state vertical-scroll-proportion="0.7109005">
+              <caret line="61" column="22" selection-start-line="61" selection-start-column="22" selection-end-line="61" selection-end-column="22" />
               <folding />
             </state>
           </provider>
@@ -97,10 +97,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ReverseSentence.scala" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ReverseSentence.scala" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/com/algos/done/ReverseSentence.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.07109005">
+            <state vertical-scroll-proportion="0.0">
               <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
               <folding />
             </state>
@@ -153,11 +153,11 @@
         <option value="$PROJECT_DIR$/src/main/scala/com/algos/done/ConvertBase.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/com/algos/inprogress/GCD.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/com/algos/done/GCD.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/com/algos/inprogress/MaxDifference.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/com/algos/inprogress/CardGame.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/com/algos/done/CardGame.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/com/algos/inprogress/ReverseSentence.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/com/algos/done/ReverseSentence.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/com/algos/inprogress/MaxDifference.scala" />
       </list>
     </option>
   </component>
@@ -349,7 +349,7 @@
       <recent name="com.algos.done" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.ReverseSentence">
+  <component name="RunManager" selected="Application.MaxDifference">
     <configuration default="false" name="GCD" type="Application" factoryName="Application" temporary="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
@@ -759,10 +759,10 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Application.ReverseSentence" />
-        <item index="1" class="java.lang.String" itemvalue="Application.Main (1)" />
-        <item index="2" class="java.lang.String" itemvalue="Application.Main" />
-        <item index="3" class="java.lang.String" itemvalue="Application.MaxDifference" />
+        <item index="0" class="java.lang.String" itemvalue="Application.MaxDifference" />
+        <item index="1" class="java.lang.String" itemvalue="Application.ReverseSentence" />
+        <item index="2" class="java.lang.String" itemvalue="Application.Main (1)" />
+        <item index="3" class="java.lang.String" itemvalue="Application.Main" />
         <item index="4" class="java.lang.String" itemvalue="Application.GCD" />
       </list>
     </recent_temporary>
@@ -823,16 +823,16 @@
       <workItem from="1453518421746" duration="6370000" />
       <workItem from="1453526721597" duration="24985000" />
       <workItem from="1453701436387" duration="98000" />
-      <workItem from="1453709527975" duration="14853000" />
+      <workItem from="1453709527975" duration="21637000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="46306000" />
+    <option name="totallyTimeSpent" value="53090000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="797" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -846,7 +846,7 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.38186812" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25277779" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25277779" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1050,14 +1050,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/com/algos/inprogress/MaxDifference.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="8" column="39" selection-start-line="8" selection-start-column="39" selection-end-line="8" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$PROJECT_DIR$/../../Activator/repository/org.scala-lang/scala-library/2.11.6/jars/scala-library.jar!/scala/collection/immutable/List.class">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-5.185185">
@@ -1078,8 +1070,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/com/algos/done/ReverseSentence.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.07109005">
+        <state vertical-scroll-proportion="0.0">
           <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/com/algos/inprogress/MaxDifference.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7109005">
+          <caret line="61" column="22" selection-start-line="61" selection-start-column="22" selection-end-line="61" selection-end-column="22" />
           <folding />
         </state>
       </provider>
